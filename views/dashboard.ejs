@@ -1,0 +1,117 @@
+<!-- <h1>welcome to user dashboard</h1>
+<h2>hi....  <%= data.name%></h2>
+<h2>hi....  <%= data.email%></h2>
+
+<h3><a href="/logout">Logout</a></h3> -->
+
+
+<%- include('./layout/header.ejs') %>
+        <!-- Page Content  -->
+      <div id="content" class="p-4 p-md-5 pt-5">
+        <h2 class="mb-4">welcome <%= data.name%></h2>
+        <div class="row">
+          <div class="col-md-3">
+            <ul class="list-group">
+              <%
+              
+              if(users.length>0){
+                users.forEach(function(user){
+                  %>
+
+                  <li class="list-group-item cursor-pointer user-list" data-id="<%=user['_id']%>">
+                    <img src="https://cdn-icons-png.flaticon.com/512/219/219970.png" alt="ss" height="50px" width="50px">
+                    <%= user.name%>
+
+                    <%
+                    if(user['is_online']==1){%>
+                      <sup class="online-status" id="<%=user['_id']%>-status">Online</sup>
+                      <%
+                    }else{%>
+                      <sup class="offline-status" id="<%=user['_id']%>-status">Offline</sup>
+
+                      <%}%>
+                  </li>
+                  <%
+                })
+              }else{
+                %>   
+                <li class="list-group-item">No user found</li>
+                <%
+              }              
+              %>
+            </ul>
+          </div>
+
+          <div class="col-md-9">
+            <h3 class="start-head">Chat With Friends</h3>
+
+            <div class="chat-section">
+              <div id="chat-container">
+
+                <!-- <div class="current-user-chat">
+                  <h5>hello</h5>
+                </div>
+                <div class="distance-user-chat">
+                  <h5>hi</h5>
+                </div>
+                 -->
+
+
+            </div>
+            <form action="" id="chat-form">
+              
+              <input type="text" name="message" id="message" placeholder="write mesage" class="border bg- bg-secondary text-white">
+              <button class=" btn btn-primary">Send</button>
+
+            </form>
+
+          </div>
+        </div>
+        
+      </div>
+		</div>
+
+
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.2/socket.io.js" integrity="sha512-VJ6+sp2E5rFQk05caiXXzQd1wBABpjEj1r5kMiLmGAAgwPItw1YpqsCCBtq8Yr1x6C49/mTpRdXtq8O2RcZhlQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+      var sender_id = "<%= data._id%>"
+      var receiver_id = "<%= data._id%>"
+     var socket= io("/user-name",{
+      auth:{
+        token:'<%= data._id%>'
+      }
+     })
+
+      $(document).ready(function(){
+        var userId=$(this).attr("data-id")
+          receiver_id=userId
+        $(".user-list").click(function(){
+          var name = $(this).text();
+          $(".start-head").text(name);
+          $(".chat-section").show();
+        })
+      })
+
+      //update online status
+      socket.on("OnlineUser",function(data){
+       
+          $("#"+data.user_id+"-status").text("Online")
+          $("#"+data.user_id+"-status").removeClass("offline-status")
+          $("#"+data.user_id+"-status").addClass("online-status")
+       
+      })
+
+      //update offline status
+      socket.on("OfflineUser",function(data){
+        
+          $("#"+data.user_id+"-status").text("Offline")
+          $("#"+data.user_id+"-status").addClass("offline-status")
+          $("#"+data.user_id+"-status").removeClass("online-status")
+       
+      })
+    </script>
+
+   <%- include('./layout/footer.ejs') %>
