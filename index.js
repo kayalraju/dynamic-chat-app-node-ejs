@@ -14,8 +14,7 @@ dotenv.config();
 //const app = express();
 connectDB()
 
-
-
+//setup session
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -23,7 +22,9 @@ app.use(session({
 }));
 
 app.set('view engine', 'ejs');
-app.set('views', './views');
+app.set('views', 'views');
+
+
 
 app.use(express.static('public'));
 
